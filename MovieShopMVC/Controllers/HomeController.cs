@@ -15,9 +15,11 @@ namespace MovieShopMVC.Controllers
 {
     public class HomeController : Controller
     {
-        private IMovieService _movieService;
+        private readonly IMovieService _movieService;
+        private readonly int x;
         public HomeController(IMovieService movieService)
         {
+            x = 40;
             _movieService = movieService;
         }
 
@@ -29,7 +31,7 @@ namespace MovieShopMVC.Controllers
         public IActionResult Index()
         {
             // call movie service class to get list of movie card models
-            MovieService service = new MovieService();
+       
             var movieCards = _movieService.GetTop30RevenueMovies();
             // passing data from controler to view, strongly typed models
             // ViewBag and ViewData

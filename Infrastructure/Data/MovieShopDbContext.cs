@@ -9,10 +9,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Data
 {
-   public class MovieShopDbContext: DbContext
+    public class MovieShopDbContext : DbContext
     {
         // get the connection string into constructor
-         public MovieShopDbContext(DbContextOptions<MovieShopDbContext> options): base(options)
+        public MovieShopDbContext(DbContextOptions<MovieShopDbContext> options) : base(options)
         {
 
         }
@@ -22,6 +22,27 @@ namespace Infrastructure.Data
             // specify Fluent API rules for your Entities
 
             modelBuilder.Entity<Movie>(ConfigureMovie);
+            modelBuilder.Entity<Trailer>(ConfigureTrailer);
+            modelBuilder.Entity<MovieGenre>(ConfigureMovieGenre);
+        }
+
+        private void ConfigureMovieGenre(EntityTypeBuilder<MovieGenre> builder)
+        {
+            builder.ToTable("MovieGenre");
+            builder.HasKey(mg => new { mg.MovieId, mg.GenreId });
+            builder.HasOne(m => m.Movie).WithMany(m => m.Genres).HasForeignKey(m => m.MovieId);
+            builder.HasOne(g => g.Genre).WithMany(g => g.Movies).HasForeignKey(g => g.GenreId);
+
+        }
+
+        private void ConfigureTrailer(EntityTypeBuilder<Trailer> builder)
+        {
+            //change the name to singular
+            builder.ToTable("Trailer");
+            builder.HasKey(t => t.Id);
+            builder.Property(t => t.TrailerUrl).HasMaxLength(2084);
+            builder.Property(t => t.Name).HasMaxLength(2084);
+
         }
 
         private void ConfigureMovie(EntityTypeBuilder<Movie> builder)
@@ -41,7 +62,7 @@ namespace Infrastructure.Data
             builder.Property(m => m.Budget).HasColumnType("decimal(18, 4)").HasDefaultValue(9.9m);
             builder.Property(m => m.Revenue).HasColumnType("decimal(18, 4)").HasDefaultValue(9.9m);
             builder.Property(m => m.CreatedDate).HasDefaultValueSql("getdate()");
-            
+
             //we wanna tell EF to ignore Rating property and not create the columns
             builder.Ignore(m => m.Rating);
         }
@@ -55,5 +76,9 @@ namespace Infrastructure.Data
         public DbSet<Role> Role { get; set; }
 
         public DbSet<User> User { get; set; }
+
+        public DbSet<Trailer> Trailers { get; set; }
+
+        public DbSet<MovieGenre> MovieGenres { get; set; }
     }
 }
