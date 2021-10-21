@@ -24,6 +24,70 @@ namespace Infrastructure.Data
             modelBuilder.Entity<Movie>(ConfigureMovie);
             modelBuilder.Entity<Trailer>(ConfigureTrailer);
             modelBuilder.Entity<MovieGenre>(ConfigureMovieGenre);
+            modelBuilder.Entity<MovieCast>(ConfigureMovieCast);
+            modelBuilder.Entity<MovieCrew>(ConfigureMovieCrew);
+            modelBuilder.Entity<Review>(ConfigureReview);
+            modelBuilder.Entity<Role>(ConfigureRole);
+            modelBuilder.Entity<User>(ConfigureUser);
+            modelBuilder.Entity<Purchase>(ConfigurePurchase);
+            modelBuilder.Entity<UserRole>(ConfigureUserRole);
+            modelBuilder.Entity<Favorite>(ConfigureFavorite);
+        }
+
+        private void ConfigureFavorite(EntityTypeBuilder<Favorite> builder)
+        {
+            builder.ToTable("Favorite");
+            builder.HasKey(f => new { f.Id });
+        }
+
+        private void ConfigureUserRole(EntityTypeBuilder<UserRole> builder)
+        {
+            builder.ToTable("UserRole");
+            builder.HasKey(ur => new { ur.UserId, ur.RoleId });
+        }
+
+        private void ConfigurePurchase(EntityTypeBuilder<Purchase> builder)
+        {
+            builder.ToTable("Purchase");
+            builder.HasKey(p => new { p.Id });
+            builder.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)");
+        }
+
+        private void ConfigureUser(EntityTypeBuilder<User> builder)
+        {
+            builder.ToTable("User");
+            builder.HasKey(u => new { u.Id });
+        }
+
+        private void ConfigureRole(EntityTypeBuilder<Role> builder)
+        {
+            builder.ToTable("Role");
+        }
+
+        private void ConfigureReview(EntityTypeBuilder<Review> builder)
+        {
+            builder.ToTable("Review");
+            builder.HasKey(r => new { r.MovieId, r.UserId });
+            builder.HasOne(m => m.Movie).WithMany(m => m.Reviews).HasForeignKey(m => m.MovieId);
+            builder.HasOne(u => u.User).WithMany(u => u.Reviews).HasForeignKey(u => u.UserId);
+            builder.Property(m => m.Rating).HasColumnType("decimal(3, 2)");
+        }
+
+        private void ConfigureMovieCrew(EntityTypeBuilder<MovieCrew> builder)
+        {
+            builder.ToTable("MovieCrew");
+            builder.HasKey(mc => new { mc.MovieId, mc.CrewId, mc.Department, mc.Job });
+            builder.HasOne(m => m.Movie).WithMany(m => m.Crews).HasForeignKey(m => m.MovieId);
+            builder.HasOne(c => c.Crew).WithMany(c => c.Movies).HasForeignKey(c => c.CrewId);
+        }
+
+        private void ConfigureMovieCast(EntityTypeBuilder<MovieCast> builder)
+        {
+            builder.ToTable("MovieCast");
+            builder.HasKey(mc => new { mc.MovieId, mc.CastId, mc.Character });
+            builder.HasOne(m => m.Movie).WithMany(m => m.Cast).HasForeignKey(m => m.MovieId);
+            builder.HasOne(c => c.Cast).WithMany(c => c.Movies).HasForeignKey(c => c.CastId);
+          
         }
 
         private void ConfigureMovieGenre(EntityTypeBuilder<MovieGenre> builder)
@@ -73,12 +137,20 @@ namespace Infrastructure.Data
 
         public DbSet<Cast> Cast { get; set; }
 
-        public DbSet<Role> Role { get; set; }
+        public DbSet<Role> Roles { get; set; }
 
-        public DbSet<User> User { get; set; }
+        public DbSet<User> Users { get; set; }
 
         public DbSet<Trailer> Trailers { get; set; }
 
         public DbSet<MovieGenre> MovieGenres { get; set; }
+
+        public DbSet<MovieCast> MovieCasts { get; set; }
+
+        public DbSet<MovieCrew> MovieCrews { get; set; }
+        public DbSet<Review> Reviews { get; set; }
+        public DbSet<Purchase> Purchases { get; set; }
+        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<Favorite> Favorites { get; set; }
     }
 }
