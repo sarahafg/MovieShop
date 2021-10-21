@@ -8,13 +8,10 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
-   public class MovieService: IMovieService
+    public class MovieTestService: IMovieService
     {
         public List<MovieCardResponseModel> GetTop30RevenueMovies()
-
         {
-            // method should call movie repository and get ther data from movie table
-
             var movieCards = new List<MovieCardResponseModel>
                 {
                     new MovieCardResponseModel { Id=1, Title = "Inception", PosterUrl="https://image.tmdb.org/t/p/w342//9gk7adHYeDvHkCSEqAvQNLV5Uge.jpg" },
@@ -24,6 +21,5 @@ namespace Infrastructure.Services
 
             return movieCards;
         }
-
     }
 }
