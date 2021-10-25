@@ -26,12 +26,12 @@ namespace Infrastructure.Data
             modelBuilder.Entity<MovieGenre>(ConfigureMovieGenre);
             modelBuilder.Entity<MovieCast>(ConfigureMovieCast);
             modelBuilder.Entity<MovieCrew>(ConfigureMovieCrew);
-            modelBuilder.Entity<Review>(ConfigureReview);
             modelBuilder.Entity<Role>(ConfigureRole);
             modelBuilder.Entity<User>(ConfigureUser);
             modelBuilder.Entity<Purchase>(ConfigurePurchase);
             modelBuilder.Entity<UserRole>(ConfigureUserRole);
             modelBuilder.Entity<Favorite>(ConfigureFavorite);
+            modelBuilder.Entity<Review>(ConfigureReview);
         }
 
         private void ConfigureFavorite(EntityTypeBuilder<Favorite> builder)
@@ -123,8 +123,8 @@ namespace Infrastructure.Data
             builder.Property(m => m.BackdropUrl).HasMaxLength(2084);
             builder.Property(m => m.OriginalLanguage).HasMaxLength(64);
             builder.Property(m => m.Price).HasColumnType("decimal(5, 2)").HasDefaultValue(9.9m);
-            builder.Property(m => m.Budget).HasColumnType("decimal(18, 4)").HasDefaultValue(9.9m);
-            builder.Property(m => m.Revenue).HasColumnType("decimal(18, 4)").HasDefaultValue(9.9m);
+            builder.Property(m => m.Budget).HasColumnType("decimal(18, 2)").HasDefaultValue(9.9m);
+            builder.Property(m => m.Revenue).HasColumnType("decimal(18, 2)").HasDefaultValue(9.9m);
             builder.Property(m => m.CreatedDate).HasDefaultValueSql("getdate()");
 
             //we wanna tell EF to ignore Rating property and not create the columns

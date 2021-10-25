@@ -1,6 +1,7 @@
 ﻿using ApplicationCore.Entities;
 using ApplicationCore.RepositoryInterfaces;
 using Infrastructure.Data;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -16,12 +17,29 @@ namespace Infrastructure.Repositories
         {
             _dbContext = dbContext;
         }
-        public IEnumerable<Movie> GetTop30RevenueMovies()
+
+        public async Task<Movie> GetMovieById(int id)
+        {
+             var movie = await _dbContext.Movies.Include(m => m.Cast).ThenInclude(m => m.Cast)
+                .Include(m => m.Genres).ThenInclude(m => m.Genre).Include(m => m.Trailers)
+                .FirstOrDefaultAsync(m => m.Id == id);
+
+            // First vs FirstOrDefault
+            // Single ( should be only 1  0, more than 1 exception)
+            // vs SingleOrDefault(0, 1 more than 1 exception)
+
+            return movie;
+
+        }
+
+        public async Task<IEnumerable<Movie>> GetTop30RevenueMovies()
         {
             // we are gonna use EF with LINQ to get top 30 movies by revenue
             // SQL select top 30 * from Movies order by Revenue
-
-            var movies = _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(30).ToList();
+            // I/O bound operation
+            // u can await only Tasks
+            // EF and Dapper have both sync and async methods
+            var movies = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(30).ToListAsync();
             return movies;
         }
     }
