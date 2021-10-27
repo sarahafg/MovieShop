@@ -32,6 +32,12 @@ namespace Infrastructure.Data
             modelBuilder.Entity<UserRole>(ConfigureUserRole);
             modelBuilder.Entity<Favorite>(ConfigureFavorite);
             modelBuilder.Entity<Review>(ConfigureReview);
+            modelBuilder.Entity<Cast>(ConfigureCast);
+        }
+
+        private void ConfigureCast(EntityTypeBuilder<Cast> builder)
+        {
+            builder.ToTable("Cast");
         }
 
         private void ConfigureFavorite(EntityTypeBuilder<Favorite> builder)
@@ -50,6 +56,8 @@ namespace Infrastructure.Data
         {
             builder.ToTable("Purchase");
             builder.HasKey(p => new { p.Id });
+            builder.HasOne(m => m.Movie).WithMany(m => m.Purchases).HasForeignKey(m => m.MovieId);
+            builder.HasOne(u => u.User).WithMany(u => u.Purchases).HasForeignKey(u => u.UserId);
             builder.Property(p => p.TotalPrice).HasColumnType("decimal(18, 2)");
         }
 
@@ -85,7 +93,7 @@ namespace Infrastructure.Data
         {
             builder.ToTable("MovieCast");
             builder.HasKey(mc => new { mc.MovieId, mc.CastId, mc.Character });
-            builder.HasOne(m => m.Movie).WithMany(m => m.Cast).HasForeignKey(m => m.MovieId);
+            builder.HasOne(m => m.Movie).WithMany(m => m.Casts).HasForeignKey(m => m.MovieId);
             builder.HasOne(c => c.Cast).WithMany(c => c.Movies).HasForeignKey(c => c.CastId);
           
         }
@@ -135,7 +143,7 @@ namespace Infrastructure.Data
 
         public DbSet<Movie> Movies { get; set; }
 
-        public DbSet<Cast> Cast { get; set; }
+        public DbSet<Cast> Casts { get; set; }
 
         public DbSet<Role> Roles { get; set; }
 

@@ -20,9 +20,12 @@ namespace Infrastructure.Repositories
 
         public async Task<Movie> GetMovieById(int id)
         {
-             var movie = await _dbContext.Movies.Include(m => m.Cast).ThenInclude(m => m.Cast)
+             var movie = await _dbContext.Movies.Include(m => m.Casts).ThenInclude(m => m.Cast)
                 .Include(m => m.Genres).ThenInclude(m => m.Genre).Include(m => m.Trailers)
-                .FirstOrDefaultAsync(m => m.Id == id);
+                .SingleOrDefaultAsync(m => m.Id == id);
+            var movieRating = await _dbContext.Reviews.Where(r => r.MovieId == id).DefaultIfEmpty()
+                .AverageAsync(r => r == null ? 0 : r.Rating);
+            if (movieRating > 0) movie.Rating = movieRating;
 
             // First vs FirstOrDefault
             // Single ( should be only 1  0, more than 1 exception)

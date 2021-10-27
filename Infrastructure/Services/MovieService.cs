@@ -42,6 +42,7 @@ namespace Infrastructure.Services
                 BackdropUrl = movie.BackdropUrl,
                 ImdbUrl = movie.ImdbUrl,
                 TmdbUrl = movie.TmdbUrl
+              
             };
 
             foreach (var genre in movie.Genres)
@@ -54,7 +55,7 @@ namespace Infrastructure.Services
                     });
             }
 
-            foreach (var cast in movie.Cast)
+            foreach (var cast in movie.Casts)
             {
                 movieDetails.Casts.Add(
                     new CastResponseModel

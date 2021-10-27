@@ -33,6 +33,9 @@ namespace MovieShopMVC
             services.AddControllersWithViews();
             services.AddScoped<IMovieService, MovieService>();
             services.AddScoped<IMovieRepository, MovieRepository>();
+            services.AddScoped<IUserRepository, UserRepository>();
+            services.AddScoped<IUserService, UserService>();
+
 
             // inject connection string from appsetting.json to MovieShopDbContext
 
