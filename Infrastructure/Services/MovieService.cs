@@ -67,6 +67,18 @@ namespace Infrastructure.Services
                     });
             }
 
+            foreach (var trailer in movie.Trailers)
+            {
+                movieDetails.Trailers.Add(
+                    new TrailerResponseModel
+                    {
+                        Id = trailer.Id,
+                        TrailerUrl = trailer.TrailerUrl,
+                        Name = trailer.Name,
+                        MovieId = trailer.MovieId
+                    });
+            }
+
             return movieDetails;
         }
 

@@ -38,8 +38,8 @@
             <br />
             <ul class="list-group-buttons">
                 <li class="list-group-items">
-                    <button type="button" class="btn btn-primary btn-lg btn-block">REVIEW</button>
-                    <button type="button" class="btn btn-secondary btn-lg btn-block">BUY $@Model.Price</button>
+                    <button type="button" class="btn btn-outline-light btn-lg btn-block">REVIEW</button>
+                    <button type="button" class="btn btn-light btn-lg btn-block">BUY $@Model.Price</button>
                     @*<a href="#" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">REVIEW</a>
                     <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">BUY $@Model.Price</a>*@
                 </li>
@@ -50,6 +50,21 @@
     <div class="row">
         <div class="col">
             @*1 of 2*@
+            <h3>MOVIE FACTS</h3>
+            <ul class="list-group-trailers">
+                <li>
+                    <i>Release Date</i> <span class="badge badge-pill badge-dark">@Model.ReleaseDate</span>
+                </li>
+                <li>
+                    Run Time <span class="badge badge-pill badge-dark">@Model.RunTime m</span>
+                </li>
+                <li>
+                    Box Office <span class="badge badge-pill badge-dark">$@Model.Revenue</span>
+                </li>
+                <li>
+                    Budget <span class="badge badge-pill badge-dark">$@Model.Budget</span>
+                </li>
+            </ul>
             <h3>TRAILERS</h3>
             <ul class="list-group-trailers">
                 @foreach (var trailer in Model.Trailers)
@@ -58,7 +73,7 @@
                         <a href="@trailer.TrailerUrl">@trailer.Name</a>
                     </li>
                 }
-                </ul>
+            </ul>
         </div>
         <div class="col">
             @*2 of 2*@
