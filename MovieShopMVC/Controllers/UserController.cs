@@ -1,4 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Security.Claims;
+using System.Threading.Tasks;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace MovieShopMVC.Controllers
@@ -28,10 +31,27 @@ namespace MovieShopMVC.Controllers
         }
 
         [HttpGet]
-        public async Task<IActionResult> Purchases(int id)
+        // Filters in ASP.NET 
+        [Authorize]
+        public async Task<IActionResult> Purchases()
         {
+            // get the id from HttpCOntext.User.Claims
+            /*var userIdentity = this.User.Identity;
+            if (userIdentity != null && userIdentity.IsAuthenticated)
+            {
+                // call the databsae to get the data
+                return View();
+            }
+            
+
+            RedirectToAction("Login", "Account");*/
             // get all the movies purchased by user => List<MovieCard> 
+
+            int userId = Convert.ToInt32((HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            // call userservie that will give list od moviesCard Models that this user purchased
+            // Purchase, dbContext.Purchase.where(u=> u.UserId == id);
             return View();
+
         }
 
         [HttpGet]

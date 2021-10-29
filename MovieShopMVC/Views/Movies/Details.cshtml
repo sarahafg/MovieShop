@@ -5,7 +5,7 @@
 }
 
 <div class="container">
-    <div class="row" style="background-image: url(@Model.BackdropUrl); border-color:black">
+    <div class="row" style="background-image: url(@Model.BackdropUrl)">
         <div class="col">
             @*1 of 3*@
             <img src="@Model.PosterUrl" width="300"/>
@@ -16,7 +16,7 @@
             <div style="font-size:smaller; color:lightgray">@Model.Tagline</div>
             <br />
             <div style="font-size:medium; color:lightgray">
-                @Model.RunTime m | @Model.ReleaseDate
+                @Model.RunTime m | @Model.ReleaseDate.Value.Year
                 @foreach (var genre in Model.Genres)
                 {
                     <span class="badge badge-pill badge-dark">@genre.Name</span>
@@ -24,7 +24,7 @@
             </div>
             <br />
             <div>
-                <span class="badge badge-success" style="font-size:medium;">@Model.Rating</span>
+                <span class="badge badge-success" style="font-size:medium;">@Model.Rating?.ToString("0.00")</span>
             </div>
             <br />
             <div style="font-size:medium; color:white">
@@ -40,8 +40,6 @@
                 <li class="list-group-items">
                     <button type="button" class="btn btn-outline-light btn-lg btn-block">REVIEW</button>
                     <button type="button" class="btn btn-light btn-lg btn-block">BUY $@Model.Price</button>
-                    @*<a href="#" class="btn btn-primary btn-lg active" role="button" aria-pressed="true">REVIEW</a>
-                    <a href="#" class="btn btn-secondary btn-lg active" role="button" aria-pressed="true">BUY $@Model.Price</a>*@
                 </li>
             </ul>
         </div>
@@ -53,7 +51,7 @@
             <h3>MOVIE FACTS</h3>
             <ul class="list-group-trailers">
                 <li>
-                    <i>Release Date</i> <span class="badge badge-pill badge-dark">@Model.ReleaseDate</span>
+                    <i>Release Date</i> <span class="badge badge-pill badge-dark">@Model.ReleaseDate.Value.ToShortDateString()</span>
                 </li>
                 <li>
                     Run Time <span class="badge badge-pill badge-dark">@Model.RunTime m</span>
@@ -82,8 +80,8 @@
                 @foreach (var cast in Model.Casts)
                 {
                 <li class="list-group-item">
-                    <img src="@cast.ProfilePath" width="50" />
-                    @cast.Name
+                    <img class="rounded-circle" src="@cast.ProfilePath" width="50" />
+                    &nbsp;&nbsp;@cast.Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@cast.Character
                 </li>
                 }
             </ul>
