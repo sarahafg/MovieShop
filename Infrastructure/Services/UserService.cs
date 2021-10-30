@@ -1,11 +1,14 @@
-﻿using System;
-using System.Security.Cryptography;
-using System.Threading.Tasks;
-using ApplicationCore.Entities;
+﻿using ApplicationCore.Entities;
 using ApplicationCore.Models;
 using ApplicationCore.RepositoryInterfaces;
 using ApplicationCore.ServiceInterfaces;
 using Microsoft.AspNetCore.Cryptography.KeyDerivation;
+using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Security.Cryptography;
+using System.Text;
+using System.Threading.Tasks;
 
 namespace Infrastructure.Services
 {
@@ -45,8 +48,30 @@ namespace Infrastructure.Services
             };
 
             // use EF to save this user in the user table
-            var newUser = await _userRepository.Add(user);
+            var newUser = await _userRepository.AddUser(user);
             return newUser.Id;
+        }
+
+        private string GetSalt()
+        {
+            var randomBytes = new byte[128 / 8];
+            using (var rng = RandomNumberGenerator.Create())
+            {
+                rng.GetBytes(randomBytes);
+            }
+
+            return Convert.ToBase64String(randomBytes);
+        }
+
+        private string GetHashedPassword(string password, string salt)
+        {
+            var hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
+                password,
+                Convert.FromBase64String(salt),
+                KeyDerivationPrf.HMACSHA512,
+                10000,
+                256 / 8));
+            return hashed;
         }
 
         public async Task<UserLoginResponseModel> LoginUser(UserLoginRequestModel requestModel)
@@ -74,83 +99,6 @@ namespace Infrastructure.Services
             }
 
             return null;
-        }
-
-        public async Task AddFavorite(FavoriteRequestModel favoriteRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task RemoveFavorite(FavoriteRequestModel favoriteRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<FavoriteResponseModel> GetAllFavoritesForUser(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> PurchaseMovie(PurchaseRequestModel purchaseRequest, int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<bool> IsMoviePurchased(PurchaseRequestModel purchaseRequest, int userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PurchaseResponseModel> GetAllPurchasesForUser(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<PurchaseDetailsResponseModel> GetPurchasesDetails(int userId, int movieId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task AddMovieReview(ReviewRequestModel reviewRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task UpdateMovieReview(ReviewRequestModel reviewRequest)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task DeleteMovieReview(int userId, int movieId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public async Task<UserReviewResponseModel> GetAllReviewsByUser(int id)
-        {
-            throw new NotImplementedException();
-        }
-
-        private string GetSalt()
-        {
-            var randomBytes = new byte[128 / 8];
-            using (var rng = RandomNumberGenerator.Create())
-            {
-                rng.GetBytes(randomBytes);
-            }
-
-            return Convert.ToBase64String(randomBytes);
-        }
-
-        private string GetHashedPassword(string password, string salt)
-        {
-            var hashed = Convert.ToBase64String(KeyDerivation.Pbkdf2(
-                password,
-                Convert.FromBase64String(salt),
-                KeyDerivationPrf.HMACSHA512,
-                10000,
-                256 / 8));
-            return hashed;
         }
     }
 }

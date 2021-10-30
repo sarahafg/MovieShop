@@ -3,21 +3,12 @@ using System.Security.Claims;
 using System.Threading.Tasks;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
-using Microsoft.CodeAnalysis.CSharp.Syntax;
-using MovieShopMVC.Services;
 
 namespace MovieShopMVC.Controllers
 {
     // all the action methods in User Controller should work only when user is Authenticated (login success)
     public class UserController : Controller
     {
-        private readonly ICurrentUserService _currentUserService;
-
-        public UserController(ICurrentUserService currentUserService)
-        {
-            _currentUserService = currentUserService;
-        }
-
         [HttpPost]
         public async Task<IActionResult> Purchase()
         {
@@ -44,8 +35,21 @@ namespace MovieShopMVC.Controllers
         [Authorize]
         public async Task<IActionResult> Purchases()
         {
-            var userId = _currentUserService.UserId;
-            // pass the user id to the UserService, that will pass to UserRepository
+            // get the id from HttpCOntext.User.Claims
+            /*var userIdentity = this.User.Identity;
+            if (userIdentity != null && userIdentity.IsAuthenticated)
+            {
+                // call the databsae to get the data
+                return View();
+            }
+            
+
+            RedirectToAction("Login", "Account");*/
+            // get all the movies purchased by user => List<MovieCard> 
+
+            int userId = Convert.ToInt32((HttpContext.User.FindFirst(ClaimTypes.NameIdentifier).Value));
+            // call userservie that will give list od moviesCard Models that this user purchased
+            // Purchase, dbContext.Purchase.where(u=> u.UserId == id);
             return View();
 
         }

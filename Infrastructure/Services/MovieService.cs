@@ -18,27 +18,14 @@ namespace Infrastructure.Services
             _movieRepository = movieRepository;
         }
 
-        public async Task<List<MovieCardResponseModel>> GetTop30RevenueMovies()
-        {
-            var movies = await _movieRepository.GetTop30RevenueMovies();
-
-            var movieCards = new List<MovieCardResponseModel>();
-            foreach (var movie in movies)
-                movieCards.Add(new MovieCardResponseModel
-                {
-                    Id = movie.Id,
-                    PosterUrl = movie.PosterUrl,
-                    Title = movie.Title
-                });
-
-            return movieCards;
-        }
-
         public async Task<MovieDetailsResponseModel> GetMovieDetails(int id)
         {
             var movie = await _movieRepository.GetMovieById(id);
-            if (movie == null) throw new Exception("Movie");
-            // var favoritesCount = await _favoriteRepository.GetCountAsync(f => f.MovieId == id);
+            if (movie == null)
+            {
+                throw new Exception($"No Movie Found for this {id}");
+            }
+
             var movieDetails = new MovieDetailsResponseModel
             {
                 Id = movie.Id,
@@ -55,35 +42,65 @@ namespace Infrastructure.Services
                 BackdropUrl = movie.BackdropUrl,
                 ImdbUrl = movie.ImdbUrl,
                 TmdbUrl = movie.TmdbUrl
+              
             };
 
-            foreach (var movieGenre in movie.MovieGenres)
-                movieDetails.Genres.Add(new GenreModel
-                {
-                    Id = movieGenre.Genre.Id,
-                    Name = movieGenre.Genre.Name
-                });
+            foreach (var genre in movie.Genres)
+            {
+                movieDetails.Genres.Add(
+                    new GenreModel
+                    {
+                        Id = genre.GenreId,
+                        Name = genre.Genre.Name
+                    });
+            }
 
-            foreach (var movieCast in movie.MovieCasts)
-                movieDetails.Casts.Add(new CastResponseModel
-                {
-                    Id = movieCast.Cast.Id,
-                    Name = movieCast.Cast.Name,
-                    Character = movieCast.Character,
-                    Gender = movieCast.Cast.Gender,
-                    ProfilePath = movieCast.Cast.ProfilePath,
-                    TmdbUrl = movieCast.Cast.TmdbUrl
-                });
+            foreach (var cast in movie.Casts)
+            {
+                movieDetails.Casts.Add(
+                    new CastResponseModel
+                    {
+                        Id = cast.CastId,
+                        Character = cast.Character,
+                        Name = cast.Cast.Name,
+                        ProfilePath = cast.Cast.ProfilePath
+                    });
+            }
 
             foreach (var trailer in movie.Trailers)
-                movieDetails.Trailers.Add(new TrailerResponseModel
-                {
-                    Id = trailer.Id,
-                    Name = trailer.Name,
-                    TrailerUrl = trailer.TrailerUrl,
-                    MovieId = trailer.MovieId
-                });
+            {
+                movieDetails.Trailers.Add(
+                    new TrailerResponseModel
+                    {
+                        Id = trailer.Id,
+                        TrailerUrl = trailer.TrailerUrl,
+                        Name = trailer.Name,
+                        MovieId = trailer.MovieId
+                    });
+            }
+
             return movieDetails;
         }
+
+        public async Task<List<MovieCardResponseModel>> GetTop30RevenueMovies()
+        {
+            // calling MovieRepository with DI based on IMovieRepository
+            // I/O bound operation
+            var movies = await _movieRepository.GetTop30RevenueMovies();
+
+            var movieCards = new List<MovieCardResponseModel>();
+            foreach (var movie in movies)
+            {
+                movieCards.Add(new MovieCardResponseModel
+                {
+                    Id = movie.Id,
+                    PosterUrl = movie.PosterUrl,
+                    Title = movie.Title
+                });
+            }
+
+            return movieCards;
+        }
+
     }
 }

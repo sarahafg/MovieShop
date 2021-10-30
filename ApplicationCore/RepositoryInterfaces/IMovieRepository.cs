@@ -7,15 +7,10 @@ using System.Threading.Tasks;
 
 namespace ApplicationCore.RepositoryInterfaces
 {
-   public interface IMovieRepository: IAsyncRepository<Movie>
+   public interface IMovieRepository
     {
-        //// method thtas gonn aget 30 highest revenue movies
-        //Task< IEnumerable<Movie>> GetTop30RevenueMovies();
-        //Task<Movie> GetMovieById(int id);
-
-        Task<IEnumerable<Movie>> GetTop30RevenueMovies();
+        // method thtas gonn aget 30 highest revenue movies
+        Task< IEnumerable<Movie>> GetTop30RevenueMovies();
         Task<Movie> GetMovieById(int id);
-        Task<IEnumerable<Review>> GetMovieReviews(int id, int pageSize = 30, int page = 1);
-        //Task<PagedResultSet<Movie>> GetMoviesByGenre(int genreId, int pageSize = 30, int page = 1);
     }
 }
