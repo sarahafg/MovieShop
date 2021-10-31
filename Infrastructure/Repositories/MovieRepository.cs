@@ -10,12 +10,11 @@ using System.Threading.Tasks;
 
 namespace Infrastructure.Repositories
 {
-    public class MovieRepository : IMovieRepository
+    public class MovieRepository : EfRepository<Movie>, IMovieRepository
     {
         public MovieShopDbContext _dbContext;
-        public MovieRepository(MovieShopDbContext dbContext)
+        public MovieRepository(MovieShopDbContext dbContext) : base(dbContext)
         {
-            _dbContext = dbContext;
         }
 
         public async Task<Movie> GetMovieById(int id)
@@ -44,6 +43,17 @@ namespace Infrastructure.Repositories
             // EF and Dapper have both sync and async methods
             var movies = await _dbContext.Movies.OrderByDescending(m => m.Revenue).Take(30).ToListAsync();
             return movies;
+        }
+
+        public async Task<IEnumerable<Review>> GetMovieReviews(int id, int pageSize = 30, int page = 1)
+        {
+            var movieReview = await _dbContext.Reviews.Include(r => r.MovieId).Include(r => r.UserId)
+                .Include(r => r.Rating).Include(r => r.ReviewText).SingleOrDefaultAsync(r => r.MovieId == id);
+            var movieRating = await _dbContext.Reviews.Where(r => r.MovieId == id).DefaultIfEmpty()
+                .AverageAsync(r => r == null ? 0 : r.Rating);
+            if (movieRating > 0) movieReview.Rating = movieRating;
+            return (IEnumerable<Review>)movieReview;
+            
         }
     }
 }
