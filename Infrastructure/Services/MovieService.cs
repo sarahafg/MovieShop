@@ -18,12 +18,31 @@ namespace Infrastructure.Services
             _movieRepository = movieRepository;
         }
 
+        public async Task<GenreModel> GetGenre(int id)
+        {
+            var genre = await _movieRepository.GetGenre(id);
+            if (genre == null)
+            {
+                // throw new Exception($"No Movie Found for this {id}");
+                return null;
+            }
+
+            var movieGenre = new GenreModel
+            {
+                Id = genre.Id,
+                Name = genre.Name
+
+            };
+            return movieGenre;
+        }
+
         public async Task<MovieDetailsResponseModel> GetMovieDetails(int id)
         {
             var movie = await _movieRepository.GetMovieById(id);
             if (movie == null)
             {
-                throw new Exception($"No Movie Found for this {id}");
+                // throw new Exception($"No Movie Found for this {id}");
+                return null;
             }
 
             var movieDetails = new MovieDetailsResponseModel
@@ -102,5 +121,85 @@ namespace Infrastructure.Services
             return movieCards;
         }
 
+        public async Task<List<ReviewRequestModel>> GetTop30RatedMovies()
+        {
+            // calling MovieRepository with DI based on IMovieRepository
+            // I/O bound operation
+            var movies = await _movieRepository.GetTop30RatedMovies();
+
+            var movieCards = new List<ReviewRequestModel>();
+            foreach (var movie in movies)
+            {
+                movieCards.Add(new ReviewRequestModel
+                {
+                    UserId = movie.UserId,
+                    MovieId = movie.MovieId,
+                    Rating = movie.Rating,
+                    ReviewText = movie.ReviewText
+                });
+            }
+
+            return movieCards;
+        }
+
+        public async Task<MovieReviewResponseModel> GetReviewsById(int id)
+        {
+            var review = await _movieRepository.GetReviews(id);
+            if (review == null)
+            {
+                throw new Exception($"No Movie Found for this {id}");
+            }
+
+            var movieReview = new MovieReviewResponseModel
+            {
+                UserId = review.UserId,
+                MovieId = review.MovieId,
+                ReviewText = review.ReviewText,
+                Rating = review.Rating,
+                Name = review.User.FirstName
+            };
+            return movieReview;
+        }
+
+        public async Task<List<MovieCardResponseModel>> GetAllMovies()
+        {
+            var movies = await _movieRepository.GetMovie();
+            if (movies == null)
+            {
+                throw new Exception($"No Movies Found");
+            }
+
+            var movieCards = new List<MovieCardResponseModel>();
+            foreach (var movie in movies)
+            {
+                movieCards.Add(new MovieCardResponseModel
+                {
+                    Id = movie.Id,
+                    PosterUrl = movie.PosterUrl,
+                    Title = movie.Title
+                });
+            }
+
+            return movieCards;
+
+            //var allMovies = new MovieDetailsResponseModel
+            //{
+            //    Id = movies.Id,
+            //    Budget = movies.Budget,
+            //    Overview = movies.Overview,
+            //    Price = movies.Price,
+            //    PosterUrl = movies.PosterUrl,
+            //    Revenue = movies.Revenue,
+            //    ReleaseDate = movies.ReleaseDate.GetValueOrDefault(),
+            //    Rating = movies.Rating,
+            //    Tagline = movies.Tagline,
+            //    Title = movies.Title,
+            //    RunTime = movies.RunTime,
+            //    BackdropUrl = movies.BackdropUrl,
+            //    ImdbUrl = movies.ImdbUrl,
+            //    TmdbUrl = movies.TmdbUrl
+            //};
+            //return allMovies;
+        }
     }
 }
