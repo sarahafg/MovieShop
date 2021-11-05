@@ -1,7 +1,10 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute } from '@angular/router';
 import { MovieService } from 'src/app/core/services/movie.service';
+import { Cast } from 'src/app/shared/models/Cast';
+import { Genre } from 'src/app/shared/models/genre';
 import { Movie } from 'src/app/shared/models/movie';
+import { Trailer } from 'src/app/shared/models/Trailer';
 
 @Component({
   selector: 'app-movie-details',
@@ -10,8 +13,19 @@ import { Movie } from 'src/app/shared/models/movie';
 })
 export class MovieDetailsComponent implements OnInit {
 
-  movie!: Movie;
+  movies!: Movie;
   id: number = 0;
+  Title: string = '';
+  // Tagline: string = '';
+  // RunTime: number = 0;
+  // ReleaseDate: number = 0;
+  // Rating: number = 0;
+  // Genres!: Genre;
+  // Trailers!: Trailer;
+  // Casts !: Cast;
+  // Overview: string = '';
+  // Revenue: number = 0;
+  // Budget: number = 0;
 
   constructor(private activeRoute: ActivatedRoute, private movieService: MovieService) { }
 
@@ -28,8 +42,8 @@ export class MovieDetailsComponent implements OnInit {
           this.movieService.getMovieDetails(this.id)
             .subscribe(
               m => {
-                this.movie = m;
-                console.log(this.movie);
+                this.movies = m;
+                console.log(this.movies);
               }
             );
         }
