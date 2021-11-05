@@ -1,5 +1,9 @@
 <div class="card-mb-4">
-    <a>
+    <!-- <a>
+        <img src="{{movieCard.posterUrl}}" alt="{{movieCard.title}}" class="img-fluid rounded" />
+    </a> -->
+
+    <a [routerLink]="[ '/movies', movieCard.id ]">
         <img src="{{movieCard.posterUrl}}" alt="{{movieCard.title}}" class="img-fluid rounded" />
     </a>
 

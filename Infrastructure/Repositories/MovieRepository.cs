@@ -79,8 +79,7 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Movie>> GetMovie()
         {
-            var movie = await _dbContext.Movies.Include(m => m.Casts).ThenInclude(m => m.Cast)
-                .Include(m => m.Genres).ThenInclude(m => m.Genre).Include(m => m.Trailers)
+            var movie = await _dbContext.Movies.Take(30)
                 .ToListAsync();
 
             // First vs FirstOrDefault

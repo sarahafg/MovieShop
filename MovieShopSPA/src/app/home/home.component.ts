@@ -33,27 +33,27 @@ export class HomeComponent implements OnInit {
         console.table(this.movieCards);
       }
     );
-      this.movieService.getTopRatedMovies().subscribe(
-        m => {
-          this.movieCards = m;
-          console.log('inside the ngOnInit method of Home Component');
-          console.table(this.movieCards);
-        }
-    );
-    this.genreService.getAllGenres().subscribe(
-      g => {
-        this.genres = g;
-        console.log('inside the ngOnInit method of Home Component');
-        console.table(this.genres);
-      }
-  );
-  this.movieService.getMovieDetails(this.id).subscribe(
-    m => {
-      this.movies = m;
-      console.log('inside the ngOnIt method of Home Component');
-      console.table(this.movies);
-    }
-  );
-  }
+  //     this.movieService.getTopRatedMovies().subscribe(
+  //       m => {
+  //         this.movieCards = m;
+  //         console.log('inside the ngOnInit method of Home Component');
+  //         console.table(this.movieCards);
+  //       }
+  //   );
+  //   this.genreService.getAllGenres().subscribe(
+  //     g => {
+  //       this.genres = g;
+  //       console.log('inside the ngOnInit method of Home Component');
+  //       console.table(this.genres);
+  //     }
+  // );
+  // this.movieService.getMovieDetails(3).subscribe(
+  //   m => {
+  //     this.movies = m;
+  //     console.log('inside the ngOnIt method of Home Component');
+  //     console.table(this.movies);
+  //   }
+  // );
+  // }
 
-}
+}}
