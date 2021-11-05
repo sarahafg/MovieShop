@@ -26,9 +26,10 @@ namespace Infrastructure.Repositories
 
         public async Task<IEnumerable<Purchase>> GetAllPurchasesForUser(int userId, int pageSize = 30, int pageIndex = 1)
         {
-            var user = await _dbContext.Purchases.Include(p => p.UserId == userId).Include(p => p.User).ThenInclude(p => p.Purchases)
-                .Include(p => p.PurchaseDateTime).Include(p => p.PurchaseNumber).ToListAsync();
-            return user;
+            var purchases = await _dbContext.Purchases.Include(m => m.Movie).Where(p => p.UserId == userId).ToListAsync();
+            //var user = await _dbContext.Purchases.Include(p => p.UserId == userId).Include(p => p.User).ThenInclude(p => p.Purchases)
+            //    .Include(p => p.PurchaseDateTime).Include(p => p.PurchaseNumber).ToListAsync();
+            return purchases;
         }
 
         public async Task<IEnumerable<Purchase>> GetAllPurchasesByMovie(int movieId, int pageSize = 30, int pageIndex = 1)
@@ -40,8 +41,7 @@ namespace Infrastructure.Repositories
 
         public async Task<Purchase> GetPurchaseDetails(int userId, int movieId)
         {
-            var purDetails = await _dbContext.Purchases.Include(p => p.UserId == userId).Include(p => p.User).ThenInclude(p => p.Purchases)
-                .Include(p => p.PurchaseDateTime).Include(p => p.PurchaseNumber).Include(p => p.MovieId == movieId).Include(p => p.Movie).FirstOrDefaultAsync();
+            var purDetails = await _dbContext.Purchases.FirstOrDefaultAsync(p => p.UserId == userId && p.MovieId == movieId);
             return purDetails;
         }
     }

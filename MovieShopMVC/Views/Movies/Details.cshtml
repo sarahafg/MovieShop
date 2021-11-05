@@ -38,8 +38,17 @@
             <br />
             <ul class="list-group-buttons">
                 <li class="list-group-items">
-                    <button type="button" class="btn btn-outline-light btn-lg btn-block">REVIEW</button>
-                    <button type="button" class="btn btn-light btn-lg btn-block">BUY $@Model.Price</button>
+                    @*<button type="button" class="btn btn-outline-light btn-lg btn-block">REVIEW</button>
+        <button type="button" class="btn btn-light btn-lg btn-block">BUY $@Model.Price</button>*@
+                    <form asp-controller="User" asp-action="Purchase" asp-route-movieId="@Model.Id" method="post">
+                        <button type="submit" class="btn btn-outline-secondary">BUY $@Model.Price</button><br>
+                    </form>
+                    <form asp-controller="User" asp-action="Review" asp-route-movieId="@Model.Id" method="post">
+                        <button type="button" class="btn btn-outline-secondary">REVIEW</button><br>
+                    </form>
+                    <form asp-controller="User" asp-action="Favorite" asp-route-movieId="@Model.Id" method="post">
+                        <button type="button" class="btn btn-outline-secondary">FAVORITE</button><br>
+                    </form>
                 </li>
             </ul>
         </div>

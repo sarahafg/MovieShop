@@ -19,7 +19,9 @@ namespace MovieShopAPI.Controllers
             _castService = castService;
         }
 
-        //http://localhost/api/Genres
+     
+        // get all the movies belonging to that cast
+
         [HttpGet]
         [Route("{id}")]
         public async Task<IActionResult> GetCast(int id)

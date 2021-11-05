@@ -17,6 +17,6 @@ namespace ApplicationCore.Models
         public int MovieId { get; set; }
         public string Title { get; set; }
         public string PosterUrl { get; set; }
-        public DateTime ReleaseDate { get; set; }
+        public DateTime? ReleaseDate { get; set; }
     }
 }

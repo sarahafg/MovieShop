@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Security.Claims;
 using System.Threading.Tasks;
+using ApplicationCore.Models;
 using ApplicationCore.ServiceInterfaces;
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
@@ -11,24 +12,43 @@ namespace MovieShopMVC.Controllers
     // all the action methods in User Controller should work only when user is Authenticated (login success)
     public class UserController : Controller
     {
+        private readonly IUserService _userService;
         private readonly ICurrentUserService _currentUserService;
-        public UserController(ICurrentUserService currentUserService)
+        public UserController(IUserService userService, ICurrentUserService currentUserService)
         {
+            _userService = userService;
             _currentUserService = currentUserService;
         }
 
         [HttpPost]
-        public async Task<IActionResult> Purchase()
+        public async Task<IActionResult> Purchase(int movieId)
         {
             // purchase a movie when user clicks on Buy button on Movie Details Page
-            return View();
+            var purchaseRequestModel = new PurchaseRequestModel
+            {
+                MovieId = movieId
+            };
+            // is purchased
+            var isPurchased = await _userService.IsMoviePurchased(purchaseRequestModel, _currentUserService.UserId);
+            if (isPurchased)
+            {
+                return RedirectToAction("Details", "Movies", new { id = movieId });
+            }
+
+            var succeedPurchased = await _userService.PurchaseMovie(purchaseRequestModel, _currentUserService.UserId);
+            if (succeedPurchased)
+            {
+                return RedirectToAction("Purchases");
+            }
+            return RedirectToAction("Details", "Movies");
         }
 
         [HttpPost]
-        public async Task<IActionResult> Favorite()
+        public async Task<IActionResult> Favorite(FavoriteRequestModel favoriteRequest)
         {
             // favorite a movie when user clicks on Favorite Button on Movie Details Page
-            return View();
+            var favorites = _userService.AddFavorite(favoriteRequest);
+            return View(favorites);
         }
 
         [HttpPost]
@@ -39,9 +59,19 @@ namespace MovieShopMVC.Controllers
         }
 
         [HttpGet]
+        [Authorize]
+        public async Task<IActionResult> PurchaseDetails(int movieId)
+        {
+            var userId = _currentUserService.UserId;
+            var purchaseDetails = await _userService.GetPurchasesDetails(userId, movieId);
+            // return a partial view, put the partial view inside the popup (bootstrap model) 
+            return View(purchaseDetails);
+        }
+
+        [HttpGet]
         // Filters in ASP.NET 
         [Authorize]
-        public async Task<IActionResult> Purchases()
+        public async Task<IActionResult> Purchases(int id, PurchaseRequestModel purchaseRequest)
         {
             // get the id from HttpCOntext.User.Claims
             /*var userIdentity = this.User.Identity;
@@ -59,9 +89,10 @@ namespace MovieShopMVC.Controllers
             // call userservie that will give list od moviesCard Models that this user purchased
             // Purchase, dbContext.Purchase.where(u=> u.UserId == id);
             var userId = _currentUserService.UserId;
+            var purchaseDetails = await _userService.GetAllPurchasesForUser(userId);
             //ViewBag.UserId = userId;
             // call the USer
-            return View();
+            return View(purchaseDetails);
 
         }
 
@@ -70,7 +101,8 @@ namespace MovieShopMVC.Controllers
         {
             // get all movies favorited by that user
             //var favorite = _currentUserService.UserId == id;
-            return View();
+            var favorites = await _userService.GetAllFavoritesForUser(id);
+            return View(favorites.FavoriteMovies);
         }
 
         public async Task<IActionResult> Reviews(int id)

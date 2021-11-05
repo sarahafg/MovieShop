@@ -15,10 +15,15 @@ namespace Infrastructure.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-
-        public UserService(IUserRepository userRepository)
+        private readonly IPurchaseRepository _purchaseRepository;
+        private readonly IFavoriteRepository _favoriteRepository;
+        private readonly IMovieRepository _movieRepository;
+        public UserService(IUserRepository userRepository, IPurchaseRepository purchaseRepository, IFavoriteRepository favoriteRepository, IMovieRepository movieRepository)
         {
             _userRepository = userRepository;
+            _purchaseRepository = purchaseRepository;
+            _favoriteRepository = favoriteRepository;
+            _movieRepository = movieRepository;
         }
 
         public async Task<int> RegisterUser(UserRegisterRequestModel requestModel)
@@ -103,135 +108,200 @@ namespace Infrastructure.Services
 
         public async Task AddFavorite(FavoriteRequestModel favoriteRequest)
         {
-            var dbUser = await _userRepository.GetById(favoriteRequest.UserId);
-            if (dbUser == null)
+            var newFavorite = await _favoriteRepository.Add(new Favorite
             {
-                throw new Exception($"No User Found for this {favoriteRequest.UserId}");
-            }
-
-            var addFav = new FavoriteRequestModel
-            {
-                UserId = favoriteRequest.UserId,
-                MovieId = favoriteRequest.MovieId
-            };
+                MovieId = favoriteRequest.MovieId,
+                UserId = favoriteRequest.UserId
+            });
         }
 
         public async Task RemoveFavorite(FavoriteRequestModel favoriteRequest)
         {
-            var dbUser = await _userRepository.GetById(favoriteRequest.UserId);
-            if (dbUser == null)
-            {
-                throw new Exception($"No User Found for this {favoriteRequest.UserId}");
-            }
-
-            var remFav = new FavoriteRequestModel
-            {
-                UserId = favoriteRequest.UserId,
-                MovieId = favoriteRequest.MovieId
-            };
+            //var removeFavorite = await _favoriteRepository.Delete(Favorite
+            //{
+            //    MovieId = favoriteRequest.MovieId,
+            //    UserId = favoriteRequest.UserId
+            //});
+            throw new NotImplementedException();
         }
 
         public async Task<FavoriteResponseModel> GetAllFavoritesForUser(int id)
         {
-            FavoriteResponseModel favoriteResponse = new FavoriteResponseModel();
-            var dbUser = await _userRepository.GetById(id);
-            //if (dbUser == null) throw null;
-            //FavoriteResponseModel favoriteResponse = new FavoriteResponseModel();
-            //List<FavoriteResponseModel.FavoriteMovieResponseModel> favoriteMovies = favoriteResponse.FavoriteMovies;
-            //var movie = await _userRepository.GetById(id);
-            if (dbUser == null)
+            var favorites = await _favoriteRepository.GetAll();
+            if (favorites == null) throw new Exception("No favorite movies found");
+            var favoriteMovie = new FavoriteResponseModel();
+            var favoriteCard = new MovieCardResponseModel();
+            favoriteMovie.UserId = id;
+            foreach (var favorite in favorites)
             {
-                throw new Exception($"No User Found for this {id}");
+                favoriteCard.Id = favorite.Id;
+                var movie = _movieRepository.GetMovieById(favorite.MovieId);
+                favoriteCard.PosterUrl = movie.Result.PosterUrl;
+                favoriteCard.Title = movie.Result.Title;
+                favoriteMovie.FavoriteMovies.Add((FavoriteResponseModel.FavoriteMovieResponseModel)favoriteCard);
             }
 
-            var favMovies = new FavoriteResponseModel
-            {
-                UserId = dbUser.Id,
-                FavoriteMovies = favoriteResponse.FavoriteMovies
-            };
-            return favMovies;
+            return favoriteMovie;
         }
 
-        public async Task<bool> PurchaseMovie(PurchaseRequestModel purchaseRequest, int userId)
-        {
-            var dbPurchase = await _userRepository.GetById(userId);
-            if (dbPurchase == null)
-            {
-                throw new Exception($"No User Found for this {userId}");
-            }
-            if (purchaseRequest.PurchaseNumber==null)
-            {
-                var purchaseMovie = new PurchaseRequestModel
-                {
-                    MovieId = purchaseRequest.MovieId
+        //public async Task<bool> PurchaseMovie(PurchaseRequestModel purchaseRequest, int userId)
+        //{
+        //    if (purchaseRequest == null)
+        //    {
+        //        throw new Exception($"No User Found for this {userId}");
+        //    }
+        //    var purchase = new Purchase
+        //    {
+        //        UserId = userId,
+        //        PurchaseNumber = (Guid)purchaseRequest.PurchaseNumber,
+        //        PurchaseDateTime = (DateTime)purchaseRequest.PurchaseDateTime,
+        //        MovieId = purchaseRequest.MovieId
+        //    };
+        //    var newPurchase = await _purchaseRepository.Add(purchase);
+        //    return newPurchase != null;
+        //}
 
-                };
-                return true;
-            }
-            else
-            {
-                return false;
-            }
-        }
+        //public async Task<bool> IsMoviePurchased(PurchaseRequestModel purchaseRequest, int userId)
+        //{
+        //    var dbPurchase = await _purchaseRepository.GetPurchaseDetails(userId, purchaseRequest.MovieId);
+        //    if (dbPurchase == null)
+        //    {
+        //        throw new Exception($"No User Found for this {userId}");
+        //    }
+        //    if (purchaseRequest.PurchaseNumber == null)
+        //    {
+        //        return false;
+        //    }
+        //    else
+        //    {
+        //        return true;
+        //    }
+        //}
 
-        public async Task<bool> IsMoviePurchased(PurchaseRequestModel purchaseRequest, int userId)
-        {
-            var dbPurchase = await _userRepository.GetById(userId);
-            if (dbPurchase == null)
-            {
-                throw new Exception($"No User Found for this {userId}");
-            }
-            if (purchaseRequest.PurchaseNumber == null)
-            {
-                return false;
-            }
-            else
-            {
-                return true;
-            }
-        }
+        //public async Task<PurchaseResponseModel> GetAllPurchasesForUser(int userId)
+        //{
+        //    var purchases = await _purchaseRepository.GetAllPurchasesForUser(userId);
 
-        public async Task<PurchaseResponseModel> GetAllPurchasesForUser(int id)
-        {
-            PurchaseResponseModel favoriteResponse = new();
-            var dbUser = await _userRepository.GetById(id);
-            if (dbUser == null)
-            {
-                throw new Exception($"No User Found for this {id}");
-            }
+        //    if (purchases == null)
+        //    {
+        //        throw new Exception($"No movie has been purchased by this user {userId}");
+        //    }
 
-            var purchasedMovies = new PurchaseResponseModel
-            {
-                UserId = dbUser.Id,
-                PurchasedMovies = favoriteResponse.PurchasedMovies
-            };
-            return purchasedMovies;
-        }
+        //    var purchasedMovies = new List<MovieCardResponseModel>();
+        //    foreach (var purchase in purchases)
+        //    {
+        //        //var movie = await _movieRepository.GetMovieById(purchase.MovieId);
+        //        var movieCard = new MovieCardResponseModel
+        //        {
+        //            Id = purchase.MovieId,
+        //            Title = purchase.Movie.Title,
+        //            PosterUrl = purchase.Movie.PosterUrl
+        //        };
+        //        purchasedMovies.Add(movieCard);
+        //    }
+
+        //    var purchaseResponse = new PurchaseResponseModel
+        //    {
+        //        PurchasedMovies = purchasedMovies,
+        //        TotalMoviesPurchased = purchases.Count()
+
+        //    };
+
+        //    return purchaseResponse;
+        //}
 
         public async Task<PurchaseDetailsResponseModel> GetPurchasesDetails(int userId, int movieId)
         {
-            PurchaseDetailsResponseModel favoriteResponse = new();
-            var dbUser = await _userRepository.GetById(userId);
+            var dbUser = await _purchaseRepository.GetPurchaseDetails(userId, movieId);
             if (dbUser == null)
             {
-                throw new Exception($"No User Found for this {userId}");
+                throw new Exception($"No Purchase for this {movieId} Found for this {userId}");
             }
 
             var getPurchaseDetails = new PurchaseDetailsResponseModel
             {
-                Id = favoriteResponse.Id,
-                UserId = favoriteResponse.UserId,
-                PurchaseNumber = favoriteResponse.PurchaseNumber,
-                TotalPrice = favoriteResponse.TotalPrice,
-                PurchaseDateTime = favoriteResponse.PurchaseDateTime,
-                MovieId = favoriteResponse.MovieId,
-                Title = favoriteResponse.Title,
-                PosterUrl = favoriteResponse.PosterUrl,
-                ReleaseDate = favoriteResponse.ReleaseDate
-
+                Id = dbUser.Id,
+                UserId = dbUser.UserId,
+                PurchaseNumber = dbUser.PurchaseNumber,
+                TotalPrice = dbUser.TotalPrice,
+                PurchaseDateTime = dbUser.PurchaseDateTime,
+                MovieId = dbUser.MovieId,
+                Title = dbUser.Movie.Title,
+                PosterUrl = dbUser.Movie.PosterUrl,
+                ReleaseDate = dbUser.Movie.ReleaseDate
             };
             return getPurchaseDetails;
         }
+
+        public async Task<PurchaseResponseModel> GetAllPurchasesForUser(int userId)
+        {
+            var purchases = await _purchaseRepository.GetAllPurchasesForUser(userId);
+
+            if (purchases == null)
+            {
+                throw new Exception($"No movie has been purchased by this user {userId}");
+            }
+
+            var purchasedMovies = new List<MovieCardResponseModel>();
+            foreach (var purchase in purchases)
+            {
+                //var movie = await _movieRepository.GetMovieById(purchase.MovieId);
+                var movieCard = new MovieCardResponseModel
+                {
+                    Id = purchase.MovieId,
+                    Title = purchase.Movie.Title,
+                    PosterUrl = purchase.Movie.PosterUrl
+                };
+                purchasedMovies.Add(movieCard);
+            }
+
+            var purchaseResponse = new PurchaseResponseModel
+            {
+                PurchasedMovies = purchasedMovies,
+                TotalMoviesPurchased = purchases.Count()
+
+            };
+
+            return purchaseResponse;
+        }
+
+        public async Task<bool> PurchaseMovie(PurchaseRequestModel purchaseRequest, int userId)
+        {
+
+            var purchase = new Purchase
+            {
+                UserId = userId,
+                PurchaseNumber = (Guid)purchaseRequest.PurchaseNumber,
+                PurchaseDateTime = (DateTime)purchaseRequest.PurchaseDateTime,
+                MovieId = purchaseRequest.MovieId
+            };
+            var newPurchase = await _purchaseRepository.Add(purchase);
+            return newPurchase != null;
+        }
+
+        public async Task<bool> IsMoviePurchased(PurchaseRequestModel purchaseRequest, int userId)
+        {
+            var isPurchased = await _purchaseRepository.GetPurchaseDetails(userId, purchaseRequest.MovieId);
+            return isPurchased != null;
+        }
+
+        //public async Task<PurchaseDetailsResponseModel> GetPurchasesDetails(int userId, int movieId)
+        //{
+        //    var purchaseDetail = await _purchaseRepository.GetPurchaseDetails(userId, movieId);
+        //    var purchaseDetailsResponseModel = new PurchaseDetailsResponseModel
+        //    {
+        //        UserId = userId,
+        //        MovieId = movieId,
+        //        Title = purchaseDetail.Movie.Title,
+        //        PosterUrl = purchaseDetail.Movie.PosterUrl,
+        //        ReleaseDate = purchaseDetail.Movie.ReleaseDate,
+        //        PurchaseDateTime = purchaseDetail.PurchaseDateTime,
+        //        TotalPrice = purchaseDetail.TotalPrice
+        //    };
+
+        //    return purchaseDetailsResponseModel;
+
+        //}
 
         public async Task AddMovieReview(ReviewRequestModel reviewRequest)
         {

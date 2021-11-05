@@ -19,6 +19,7 @@ namespace MovieShopAPI.Controllers
             _genreService = genreService;
         }
 
+        // List of movies belonging to that genre
         //http://localhost/api/Genres
         [HttpGet]
         public async Task<IActionResult> GetGenres()

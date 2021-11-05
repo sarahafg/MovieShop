@@ -10,5 +10,7 @@ namespace ApplicationCore.RepositoryInterfaces
     public interface IGenreRepository : IAsyncRepository<Genre>
     {
         Task<IEnumerable<Genre>> GetGenres();
+        //Task<IEnumerable<Movie>> GetGenres();
+        //Task<IEnumerable<Movie>> GetMoviesByGenre(int genreId, int pageSize = 30, int pageIndex = 1);
     }
 }

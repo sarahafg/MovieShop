@@ -1,0 +1,25 @@
+<!-- {{ mypageTitle }} -->
+<!-- Display list of movies as cards -->
+<!-- use foreach loop -->
+<!-- component for MovieCard, child components -->
+<!-- HomeComponent (parent) will use MovieCardComponent (child) -->
+<!-- pass the data from parent to child component (interview!!) -->
+<!-- @input MovieCard  -->
+
+<!-- how do you send data/event from child to parent @output (interview!!) -->
+<!--  -->
+
+
+<div class="rounded">
+    <div class="container-fluid">
+        <div class="row">
+            <div class="col-6 col-lg-3 col-sm-4" *ngFor="let movieCard of movieCards" >
+                <!-- call our child component -->
+                <app-movie-card [movieCard] ='movieCard'></app-movie-card>
+            
+            </div>
+        </div>
+    </div>
+
+
+</div>

@@ -38,5 +38,35 @@ namespace Infrastructure.Services
 
             return allGenres;
         }
+
+        //public async Task<List<GenreModel>> GetAllGenres()
+        //{
+        //    var genres = await _genreRepository.GetGenres();
+        //    if (genres == null)
+        //    {
+        //        throw new Exception($"No Genres Found");
+        //    }
+
+        //    var movieCards = new List<MovieCardResponseModel>();
+        //    foreach (var movie in genres)
+        //    {
+        //        movieCards.Add(new MovieCardResponseModel
+        //        {
+        //            Id = movie.Id,
+        //            PosterUrl = movie.PosterUrl,
+        //            Title = movie.Title
+        //        });
+        //    }
+        //    var allGenres = new List<GenreModel>();
+        //    foreach (var genre in genres)
+        //    {
+        //        allGenres.Add(new GenreModel
+        //        {
+        //            Id = genre.Id
+        //        });
+        //    }
+
+        //    return allGenres;
+        //}
     }
 }

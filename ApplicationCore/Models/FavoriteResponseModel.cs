@@ -13,6 +13,7 @@ namespace ApplicationCore.Models
 
         public class FavoriteMovieResponseModel : MovieCardResponseModel
         {
+            
         }
     }
 }

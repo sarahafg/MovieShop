@@ -10,5 +10,9 @@ namespace ApplicationCore.ServiceInterfaces
     public interface ICastService
     {
         Task<CastResponseModel> GetAllCast(int id);
+
+        // cast name, hi/her gender, profile path, list of movies he/she is in (movie cards)
+        //Task<> GetCastDetails(int id)
+
     }
 }

@@ -23,7 +23,7 @@ namespace Infrastructure.Services
             var genre = await _movieRepository.GetGenre(id);
             if (genre == null)
             {
-                // throw new Exception($"No Movie Found for this {id}");
+                // throw new Exception($"No Genre Found for this {id}");
                 return null;
             }
 
@@ -80,7 +80,6 @@ namespace Infrastructure.Services
                     new CastResponseModel
                     {
                         Id = cast.CastId,
-                        Character = cast.Character,
                         Name = cast.Cast.Name,
                         ProfilePath = cast.Cast.ProfilePath
                     });

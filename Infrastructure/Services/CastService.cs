@@ -32,7 +32,8 @@ namespace Infrastructure.Services
                 Id = cast.Id,
                 Name = cast.Name,
                 //Character = cast.Character,
-                ProfilePath = cast.ProfilePath
+                ProfilePath = cast.ProfilePath,
+                Movies = cast.Movies
             };
             return casts;
         }
