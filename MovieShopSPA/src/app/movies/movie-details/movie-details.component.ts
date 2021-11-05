@@ -13,19 +13,8 @@ import { Trailer } from 'src/app/shared/models/Trailer';
 })
 export class MovieDetailsComponent implements OnInit {
 
-  movies!: Movie;
+  movie!: Movie;
   id: number = 0;
-  Title: string = '';
-  // Tagline: string = '';
-  // RunTime: number = 0;
-  // ReleaseDate: number = 0;
-  // Rating: number = 0;
-  // Genres!: Genre;
-  // Trailers!: Trailer;
-  // Casts !: Cast;
-  // Overview: string = '';
-  // Revenue: number = 0;
-  // Budget: number = 0;
 
   constructor(private activeRoute: ActivatedRoute, private movieService: MovieService) { }
 
@@ -42,8 +31,8 @@ export class MovieDetailsComponent implements OnInit {
           this.movieService.getMovieDetails(this.id)
             .subscribe(
               m => {
-                this.movies = m;
-                console.log(this.movies);
+                this.movie = m;
+                console.log(this.movie);
               }
             );
         }

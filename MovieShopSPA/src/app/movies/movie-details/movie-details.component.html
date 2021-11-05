@@ -1,40 +1,38 @@
+
 <div class="container">
-    <div class="row" style="background-image: url(https://image.tmdb.org/t/p/original//orjiB3oUIsyz60hoEqkiGpy5CeO.jpg)">
+    <div class="row" [style.backgroundImage]="'url('+ movie?.backdropUrl +')'">
         <div class="col">
-            @*1 of 3*@
-            <img src="https://image.tmdb.org/t/p/w342//ulzhLuWrPK07P1YkdWQLZnQh1JL.jpg" width="300"/>
+            <!-- @*1 of 3*@ -->
+            <img src="{{ movie?.posterUrl }}" alt="{{ movie?.title }}" />
         </div>
         <div class="col-6">
-            @*2 of 3*@
-            <h1 style="color:white">Avengers</h1>
-            <div style="font-size:smaller; color:lightgray">Part of the journey is the end.</div>
+            <!-- @*2 of 3*@ -->
+            <h1 style="color:white">{{movie?.title}}</h1>
+            <div style="font-size:smaller; color:lightgray">{{movie?.tagline}}</div>
             <br />
             <div style="font-size:medium; color:lightgray">
-                181 m | 2019-04-24
-                <!-- @foreach (var genre in Model.Genres)
-                {
-                    <span class="badge badge-pill badge-dark">@genre.Name</span>
-                } -->
+                {{movie?.runTime}} m | {{movie?.releaseDate}}
+                <span class="badge badge-pill badge-dark" *ngFor="let genre of movie?.genres">{{genre.name}}</span>
             </div>
             <br />
             <div>
-                <span class="badge badge-success" style="font-size:medium;">8.9</span>
+                <span class="badge badge-success" style="font-size:medium;">{{movie?.rating}}</span>
             </div>
             <br />
             <div style="font-size:medium; color:white">
-                After the devastating events of Avengers: Infinity War, the universe is in ruins due to the efforts of the Mad Titan, Thanos. With the help of remaining allies, the Avengers must assemble once
+                {{movie?.overview}}
             </div>
             <br />
         </div>
         <div class="col">
-            @*3 of 3*@
+            <!-- @*3 of 3*@ -->
             <br />
             <br />
             <ul class="list-group-buttons">
                 <li class="list-group-items">
                    
                     <form asp-controller="User" asp-action="Purchase" asp-route-movieId="Id" method="post">
-                        <button type="submit" class="btn btn-outline-secondary">BUY $Price</button><br />
+                        <button type="submit" class="btn btn-outline-secondary">BUY ${{movie?.price}}</button><br />
                     </form>
                     <form asp-controller="User" asp-action="Review" asp-route-movieId="Id" method="post">
                         <button type="button" class="btn btn-outline-secondary">REVIEW</button><br />
@@ -49,43 +47,37 @@
     <br />
     <div class="row">
         <div class="col">
-            @*1 of 2*@
+            <!-- @*1 of 2*@ -->
             <h3>MOVIE FACTS</h3>
             <ul class="list-group-trailers">
                 <li>
-                    <i>Release Date</i> <span class="badge badge-pill badge-dark">ReleaseDate.Value.ToShortDateString()</span>
+                    <i>Release Date</i> <span class="badge badge-pill badge-dark">{{movie?.releaseDate}}</span>
                 </li>
                 <li>
-                    Run Time <span class="badge badge-pill badge-dark">RunTime m</span>
+                    Run Time <span class="badge badge-pill badge-dark">{{movie?.runTime}} m</span>
                 </li>
                 <li>
-                    Box Office <span class="badge badge-pill badge-dark">$Revenue</span>
+                    Box Office <span class="badge badge-pill badge-dark">${{movie?.revenue}}</span>
                 </li>
                 <li>
-                    Budget <span class="badge badge-pill badge-dark">$Budget</span>
+                    Budget <span class="badge badge-pill badge-dark">${{movie?.budget}}</span>
                 </li>
             </ul>
             <h3>TRAILERS</h3>
             <ul class="list-group-trailers">
-                <!-- @foreach (var trailer in Model.Trailers)
-                {
-                    <li class="list-group-trailers-items">
-                        <a href="@trailer.TrailerUrl">@trailer.Name</a>
+                    <li class="list-group-trailers-items" *ngFor="let trailer of movie?.trailers">
+                        <a href="{{trailer.trailerUrl}}">{{trailer.name}}</a>
                     </li>
-                } -->
             </ul>
         </div>
-        <div class="col">
-            @*2 of 2*@
+        <div class="col-6">
+            <!-- @*2 of 2*@ -->
             <h3>CAST</h3>
             <ul class="list-group-casts">
-                <!-- @foreach (var cast in Model.Casts)
-                {
-                <li class="list-group-item">
-                    <img class="rounded-circle" src="@cast.ProfilePath" width="50" />
-                    &nbsp;&nbsp;@cast.Name &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;@cast.Character
+                <li class="list-group-item" *ngFor="let cast of movie.casts">
+                    <img class="rounded-circle" src="{{cast.profilePath}}" width="50" />
+                    &nbsp;&nbsp; {{cast.name}} &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp; {{cast.character}}
                 </li>
-                } -->
             </ul>
         </div>
     </div>
