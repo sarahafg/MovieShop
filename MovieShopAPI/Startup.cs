@@ -45,6 +45,7 @@ namespace MovieShopAPI
             services.AddScoped<ICastService, CastService>();
             services.AddScoped<ICastRepository, CastRepository>();
             services.AddScoped<IPurchaseRepository, PurchaseRepository>();
+            services.AddScoped<IFavoriteRepository, FavoriteRepository>();
 
             services.AddDbContext<MovieShopDbContext>(
             options => options.UseSqlServer(Configuration.GetConnectionString("MovieShopDbConnection")));

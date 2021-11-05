@@ -3,6 +3,7 @@ import { MovieService } from '../core/services/movie.service';
 import { GenreService } from '../core/services/genre.service';
 import { MovieCard } from '../shared/models/moviecard';
 import { Genre } from '../shared/models/genre';
+import { Movie } from '../shared/models/movie';
 
 @Component({
   selector: 'app-home',
@@ -13,7 +14,9 @@ export class HomeComponent implements OnInit {
 
   mypageTitle = "Movie Shop SPA";
   movieCards!: MovieCard[];
-  genres!: Genre[]
+  genres!: Genre[];
+  movies!: Movie;
+  id:number = 1;
 
   constructor(private movieService: MovieService, private genreService: GenreService) { }
 
@@ -43,6 +46,13 @@ export class HomeComponent implements OnInit {
         console.log('inside the ngOnInit method of Home Component');
         console.table(this.genres);
       }
+  );
+  this.movieService.getMovieDetails(this.id).subscribe(
+    m => {
+      this.movies = m;
+      console.log('inside the ngOnIt method of Home Component');
+      console.table(this.movies);
+    }
   );
   }
 
