@@ -1,5 +1,5 @@
 import { Component, Input, OnInit } from '@angular/core';
-import { Movie } from 'src/app/shared/models/movie';
+// import { Movie } from 'src/app/shared/models/movie';
 
 @Component({
   selector: 'app-movie',
@@ -10,7 +10,7 @@ export class MovieComponent implements OnInit {
 
   // will receive the data from parent component through @Input
 
-  @Input() movie!: Movie
+  // @Input() movie!: Movie
 
   constructor() { }
 
